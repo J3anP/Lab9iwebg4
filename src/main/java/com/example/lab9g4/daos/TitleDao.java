@@ -10,7 +10,7 @@ public class TitleDao {
     private static final String username = "root";
     private static final String password = "root";
 
-    public ArrayList<Title> list(){
+    public ArrayList<Title> list(String offset, String limit){
 
         ArrayList<Title> lista = new ArrayList<>();
 
@@ -20,26 +20,32 @@ public class TitleDao {
             throw new RuntimeException(e);
         }
 
-        String url = "jdbc:mysql://localhost:3306/employees";
+        String url = "jdbc:mysql://localhost:3306/title";
+
+        int offsetL = 0;
+        int limitL = 100;
 
         // TODO: update query
-        String sql = "select * from titles limit 25 offset 10";
+        String sql = "select * from titles limit ? offset ?";
 
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);){
 
-            while (rs.next()) {
-                Title title = new Title();
-                title.setEmpNo(rs.getInt(1));
-                title.setTitle(rs.getString(2));
-                title.setFromDate(rs.getString(3));
-                title.setToDate(rs.getString(4));
+            pstmt.setInt(1,limitL);
+            pstmt.setInt(2,offsetL);
 
-                lista.add(title);
+            try(ResultSet rs = pstmt.executeQuery()){
+                while (rs.next()) {
+                    Title title = new Title();
+                    title.setEmpNo(rs.getInt(1));
+                    title.setTitle(rs.getString(2));
+                    title.setFromDate(rs.getString(3));
+                    title.setToDate(rs.getString(4));
+
+                    lista.add(title);
+                }
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -54,7 +60,7 @@ public class TitleDao {
             throw new RuntimeException(e);
         }
 
-        String url = "jdbc:mysql://localhost:3306/employees";
+        String url = "jdbc:mysql://localhost:3306/title";
 
         String sql = "INSERT INTO titles(emp_no,title,from_date,to_date) VALUES  (?,?,?,?)";
 
@@ -80,7 +86,7 @@ public class TitleDao {
             throw new RuntimeException(e);
         }
 
-        String url = "jdbc:mysql://localhost:3306/employees";
+        String url = "jdbc:mysql://localhost:3306/title";
 
         String sql = "delete from titles where emp_no = ?";
 
@@ -99,7 +105,7 @@ public class TitleDao {
             throw new RuntimeException(e);
         }
 
-        String url = "jdbc:mysql://localhost:3306/employees";
+        String url = "jdbc:mysql://localhost:3306/title";
 
         String sql = "UPDATE titles SET to_date = ?,from_date = ?,title = ? WHERE emp_no=?";
 

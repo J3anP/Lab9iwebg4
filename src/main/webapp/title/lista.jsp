@@ -1,6 +1,5 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.lab9g4.beans.Title" %>
-<%@ page import="com.example.lab9g4.beans.Employee" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="lista" scope="request" type="ArrayList<Title>" /><html>
 <head>

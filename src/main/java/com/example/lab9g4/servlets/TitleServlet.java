@@ -25,8 +25,6 @@ public class TitleServlet extends HttpServlet {
 
         TitleDao titleDao = new TitleDao();
 
-        Title title = new Title();
-
         switch (action) {
             case "lista":
                 //saca del modelo
@@ -44,10 +42,10 @@ public class TitleServlet extends HttpServlet {
                 break;
             case "edit":
                 String id = request.getParameter("id");
-                Employee employee = titleDao.;
+                Title title = titleDao.buscarPorId(id);
 
-                if (employee != null) {
-                    request.setAttribute("title", employee);
+                if (title != null) {
+                    request.setAttribute("title", title);
                     request.getRequestDispatcher("title/form_edit.jsp").forward(request, response);
                 } else {
                     response.sendRedirect(request.getContextPath() + "/TitleServlet");
@@ -55,11 +53,11 @@ public class TitleServlet extends HttpServlet {
                 break;
             case "del":
                 String idd = request.getParameter("id");
-                Employee employee1 = employeeDao.buscarPorId(idd);
+                Title title1 = titleDao.buscarPorId(idd);
 
-                if (employee1 != null) {
+                if (title1 != null) {
                     try {
-                        title.borrar(idd);
+                        titleDao.borrar(idd);
                     } catch (SQLException e) {
                         System.out.println("Log: excepcion: " + e.getMessage());
                     }
@@ -74,26 +72,24 @@ public class TitleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
 
-        ArrayList<Employee> lista = new ArrayList<>();
+        ArrayList<Title> lista = new ArrayList<>();
 
-        EmployeeDao employeeDao = new EmployeeDao();
+        TitleDao employeeDao = new TitleDao();
 
         String action = request.getParameter("action") == null ? "crear" : request.getParameter("action");
 
-        Employee employee = new Employee();
+        Title title = new Title();
 
         if(action.equals("crear") || action.equals("e")){
-            employee.setBirthDate(request.getParameter("birthDate"));
-            employee.setFirstName(request.getParameter("firstName"));
-            employee.setLastName(request.getParameter("lastName"));
-            employee.setGender(request.getParameter("gender"));
-            employee.setHireDate(request.getParameter("hireDate"));
+            title.setTitle(request.getParameter("title"));
+            title.setFromDate(request.getParameter("fromDate"));
+            title.setToDate(request.getParameter("toDate"));
         }
 
         switch (action){
             case "crear":
-                employee.setEmpNo(employeeDao.searchLastId()+1);
-                employeeDao.create(employee);
+                /*title.setEmpNo(employeeDao.searchLastId()+1);*/
+                employeeDao.create(title);
                 response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
                 break;
             case "e":
